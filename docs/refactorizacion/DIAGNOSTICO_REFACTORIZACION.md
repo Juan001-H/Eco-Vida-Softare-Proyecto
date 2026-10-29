@@ -1,8 +1,8 @@
 # Diagnóstico y Refactorización
 
 ## 1. Contexto
-* **Equipo:** [Escribe aquí tu nombre/equipo]
-* **Repositorio:** [Pega aquí el enlace a tu GitHub]
+* **Equipo:** Juan Herrera 
+* **Repositorio:** [(https://github.com/Juan001-H/Eco-Vida-Softare-Proyecto)]
 * **Funcionalidad:** Procesamiento de Ventas (EcoVida POS).
 * **Requisitos:** Registrar ventas, calcular descuentos según afiliación y actualizar inventario.
 
@@ -19,7 +19,7 @@
 * **Impacto y riesgo:** Alto (3).
 * **Acción propuesta:** Inyectar fecha dinámica del sistema.
 * **Verificación:** Procesar ventas y revisar endpoints.
-* **Estado:** seleccionado.
+* **Estado:** implementado y verificado.
 
 **ID:** H-02 | **Tipo:** deuda técnica
 * **Ubicación:** services.py, EcoVidaService, registrar_cliente
@@ -54,14 +54,14 @@ Se prioriza el hallazgo **H-01**.
 * **Diseño después:** Uso de `datetime.now().strftime("%Y-%m-%d %H:%M:%S")`.
 
 ## 6. Verificación
-Se realizaron ventas de prueba. Se validó en la ruta GET `/ventas` que cada registro posee su propia estampa de tiempo actual, conservando el cálculo de totales original.
+Se realizaron ventas de prueba. Se validó en la ruta GET `/ventas` que cada registro posee su propia estampa de tiempo actual dinámica de Python, conservando el cálculo de totales original del sistema.
 
 ## 7. Cierre
 * **Lecciones:** Es vital eliminar datos de prueba quemados antes de integrar código.
 * **Deuda pendiente:** Extraer la base de datos a un repositorio aparte.
-* **Respuesta pregunta de cierre:** La práctica de revisiones de código (Code Review) o pruebas unitarias automatizadas habría detectado este problema antes del paso a producción.
+* **Respuesta pregunta de cierre:** La práctica de revisiones de código (Code Review) o pruebas unitarias automatizadas habría permitido detectar este problema en la fecha estática antes de entregar la aplicación al entorno de producción.
 
 ## 8. Git
-* **Commit Diagnóstico:** [Pegar hash tras el Paso 3]
-* **Commit Refactorización:** [Pegar hash tras el Paso 5]
-* **Commit Verificación:** [Pegar hash tras el Paso 5]
+* **Commit Diagnóstico:** b1c96ec
+* **Commit Refactorización:** 8c7 (Refactor sales date handling and add datetime import)
+* **Commit Verificación:** El hash de este commit.
