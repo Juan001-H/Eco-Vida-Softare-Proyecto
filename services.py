@@ -1,6 +1,7 @@
 from typing import List
 from pydantic import BaseModel
 import re
+from datetime import datetime # <- Importación añadida
 
 # ==========================================
 # MODELOS PYDANTIC PARA VALIDACIÓN
@@ -48,24 +49,19 @@ class EcoVidaService:
         return self.clientes
 
     def registrar_cliente(self, cliente_data: ClienteCreate) -> dict:
-        # Validación: Cédula solo números
         if not cliente_data.cedula.isdigit():
             return {"error": "La cédula solo debe contener números."}
         
-        # Validación: Nombre solo letras y espacios (sin números)
         if not re.match(f"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$", cliente_data.nombre):
             return {"error": "El nombre solo debe contener letras."}
 
-        # Validación de cédula única
         for c in self.clientes:
             if c["cedula"] == cliente_data.cedula:
                 return {"error": "Ya existe un cliente registrado con esta cédula."}
         
-        # Generación de ID interno único
         nuevo_id = f"CLI-{self.contador_clientes}"
         self.contador_clientes += 1
 
-        # Formateo de nombre (Primera letra de cada palabra en mayúscula)
         nombre_formateado = cliente_data.nombre.strip().title()
 
         nuevo_cliente = {
@@ -148,7 +144,7 @@ class EcoVidaService:
 
         nueva_venta = {
             "numeroFactura": num_factura,
-            "fechaHora": "2026-10-19 18:26:00",
+            "fechaHora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), # <- LÍNEA REFACTORIZADA
             "cliente_cedula": cliente["cedula"],
             "cliente_nombre": cliente["nombre"],
             "tipo_convenio": tipo_convenio_str,
@@ -159,7 +155,12 @@ class EcoVidaService:
         }
         
         self.ventas.insert(0, nueva_venta)
-        return {"message": "Venta procesada con éxito", "numeroFactura": num_factura, "total": total_pagar}
+        return {
+            "message": "Venta procesada con éxito", 
+            "numeroFactura": num_factura, 
+            "total": total_pagar,
+            "venta": nueva_venta # <- Agregado para evitar errores en el frontend
+        }
 
     def obtener_ventas(self) -> List[dict]:
         return self.ventas
