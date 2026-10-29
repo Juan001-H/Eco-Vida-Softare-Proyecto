@@ -1,7 +1,7 @@
 from typing import List
 from pydantic import BaseModel
 import re
-from datetime import datetime # <- Importación añadida
+from datetime import datetime
 
 # ==========================================
 # MODELOS PYDANTIC PARA VALIDACIÓN
@@ -19,19 +19,16 @@ class VentaCreate(BaseModel):
     cedula_cliente: str
     items: List[ItemVenta]
 
-
 # ==========================================
 # SERVICIO DE LÓGICA DE NEGOCIO
 # ==========================================
 class EcoVidaService:
     def __init__(self):
-        # Base de datos en memoria (Stateful)
         self.clientes = [
             {"cedula": "1094000123", "id_interno": "CLI-1001", "nombre": "Ana María Gómez", "tipo": "EPS"},
             {"cedula": "1094000456", "id_interno": "CLI-1002", "nombre": "Carlos Alberto Ruiz", "tipo": "Convenio"}
         ]
         
-        # Catálogo unificado con stock base de 50 unidades e imágenes estables
         self.productos = [
             {"id": 1, "nombre": "Kit de Cepillos de Bambú (x4)", "precio": 24900.0, "stock": 50, "categoria": "Hogar Sostenible", "imagen": "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=500&auto=format&fit=crop&q=80"},
             {"id": 2, "nombre": "Botella Térmica Acero Inoxidable", "precio": 65000.0, "stock": 50, "categoria": "Movilidad Eco", "imagen": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500&auto=format&fit=crop&q=80"},
@@ -49,12 +46,6 @@ class EcoVidaService:
         return self.clientes
 
     def registrar_cliente(self, cliente_data: ClienteCreate) -> dict:
-        if not cliente_data.cedula.isdigit():
-            return {"error": "La cédula solo debe contener números."}
-        
-        if not re.match(f"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$", cliente_data.nombre):
-            return {"error": "El nombre solo debe contener letras."}
-
         for c in self.clientes:
             if c["cedula"] == cliente_data.cedula:
                 return {"error": "Ya existe un cliente registrado con esta cédula."}
@@ -74,11 +65,6 @@ class EcoVidaService:
         return {"message": "Cliente registrado exitosamente", "id_interno": nuevo_id, "cliente": nuevo_cliente}
 
     def actualizar_cliente(self, cedula: str, cliente_data: ClienteCreate) -> dict:
-        if not cliente_data.cedula.isdigit():
-            return {"error": "La cédula solo debe contener números."}
-        if not re.match(f"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$", cliente_data.nombre):
-            return {"error": "El nombre solo debe contener letras."}
-
         for c in self.clientes:
             if c["cedula"] == cedula:
                 c["nombre"] = cliente_data.nombre.strip().title()
@@ -144,7 +130,7 @@ class EcoVidaService:
 
         nueva_venta = {
             "numeroFactura": num_factura,
-            "fechaHora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), # <- LÍNEA REFACTORIZADA
+            "fechaHora": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "cliente_cedula": cliente["cedula"],
             "cliente_nombre": cliente["nombre"],
             "tipo_convenio": tipo_convenio_str,
@@ -159,7 +145,7 @@ class EcoVidaService:
             "message": "Venta procesada con éxito", 
             "numeroFactura": num_factura, 
             "total": total_pagar,
-            "venta": nueva_venta # <- Agregado para evitar errores en el frontend
+            "venta": nueva_venta 
         }
 
     def obtener_ventas(self) -> List[dict]:
